@@ -19,3 +19,11 @@ dist/
 
 # Coverage
 coverage/
+
+.agents/
+
+.claude/
+
+.windsurf/
+
+skills-lock.json
