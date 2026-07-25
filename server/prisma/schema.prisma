@@ -1,3 +1,10 @@
+generator client {
+  provider = "prisma-client-js"
+}
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
 
 model User {
   id        String   @id @default(uuid())
@@ -15,7 +22,7 @@ model Folder {
   id       String   @id @default(uuid())
   name     String
   parentId String?
-  parent   Folder?  @relation("FolderToFolder", fields: [parentId], references: [id])
+  parent   Folder?  @relation("FolderToFolder", fields: [parentId], references: [id], onDelete: Cascade)
   children Folder[] @relation("FolderToFolder")
 
   ownerId  String
@@ -37,23 +44,15 @@ model File {
   mimeType   String
   storageKey String
 
-  folderId String
-  folder   Folder @relation(fields: [folderId], references: [id])
+  folderId String?
+  folder   Folder?  @relation(fields: [folderId], references: [id], onDelete: Cascade)
 
   ownerId  String
-  owner    User   @relation(fields: [ownerId], references: [id])
+  owner    User     @relation(fields: [ownerId], references: [id])
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@index([folderId])
   @@index([ownerId])
-}
-generator client {
-  provider = "prisma-client"
-  output   = "../src/generated/prisma"
-}
-
-datasource db {
-  provider = "postgresql"
 }
