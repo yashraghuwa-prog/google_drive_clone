@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import authRoutes from './routes/auth.routes';
 import folderRoutes from './routes/folder.routes';
+import fileRoutes from './routes/file.routes';
 
 const app = express();
 
@@ -14,7 +15,7 @@ app.get("/health", (req, res) => {
     message: "DriveX Backend is Running 🚀",
   });
 });
-
+app.use('/api/files', fileRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/folders', folderRoutes);
 
