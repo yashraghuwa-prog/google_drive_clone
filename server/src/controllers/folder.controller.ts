@@ -54,7 +54,11 @@ export const getFolder = async (req: AuthRequest, res: Response) => {
     const id = req.params.id as string;
     const folder = await prisma.folder.findUnique({
       where: { id },
-      include: { children: true, files: true },
+      include: {
+        children: true,
+        files: true,
+        parent: true,
+      },
     });
 
     if (!folder) return res.status(404).json({ error: 'Folder not found' });
