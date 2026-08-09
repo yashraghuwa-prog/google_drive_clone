@@ -1,9 +1,16 @@
 generator client {
   provider = "prisma-client-js"
 }
+
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+enum Permission {
+  VIEW
+  EDIT
 }
 
 model User {
@@ -14,8 +21,10 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  folders   Folder[]
-  files     File[]
+  folders        Folder[]
+  files          File[]
+  sharesReceived Share[]  @relation("SharedWithUser")
+  sharesSent     Share[]  @relation("SharedByUser")
 }
 
 model Folder {
@@ -29,6 +38,7 @@ model Folder {
   owner    User     @relation(fields: [ownerId], references: [id])
 
   files    File[]
+  shares   Share[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -55,4 +65,19 @@ model File {
 
   @@index([folderId])
   @@index([ownerId])
+}
+
+model Share {
+  id           String     @id @default(uuid())
+  folderId     String
+  folder       Folder     @relation(fields: [folderId], references: [id], onDelete: Cascade)
+  sharedWithId String
+  sharedWith   User       @relation("SharedWithUser", fields: [sharedWithId], references: [id])
+  sharedById   String
+  sharedBy     User       @relation("SharedByUser", fields: [sharedById], references: [id])
+  permission   Permission @default(VIEW)
+  createdAt    DateTime   @default(now())
+
+  @@unique([folderId, sharedWithId])
+  @@index([sharedWithId])
 }

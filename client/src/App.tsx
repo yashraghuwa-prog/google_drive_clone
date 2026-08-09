@@ -4,6 +4,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
 import Dashboard from './pages/Dashboard';
+import SharedWithMe from './pages/SharedWithMe';
 
 function App() {
   return (
@@ -17,6 +18,14 @@ function App() {
             element={
             <ProtectedRoute>
             <Dashboard />
+              <Route
+               path="/shared"
+       element={
+        <ProtectedRoute>
+         <SharedWithMe />
+    </ProtectedRoute>
+  }
+/>
           </ProtectedRoute>
   }
 />
